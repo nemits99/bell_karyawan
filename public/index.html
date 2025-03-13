@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bel Karyawan Otomatis</title>
+</head>
+<body>
+    <h2>🔔 Bel Karyawan Otomatis 🔔</h2>
+    <p>Menunggu bel...</p>
+    <button onclick="enableAudio()">🔊 Aktifkan Audio</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let audio = new Audio("https://www.fesliyanstudios.com/play-mp3/4388");
+        let isAudioEnabled = false;
+
+        function enableAudio() {
+            audio.play().then(() => {
+                audio.pause();
+                isAudioEnabled = true;
+                document.querySelector("button").style.display = "none";
+                console.log("Audio diaktifkan, siap berbunyi.");
+            }).catch(err => console.log("Gagal mengaktifkan audio:", err));
+        }
+
+        socket.on("ring", () => {
+            if (!isAudioEnabled) return;
+            console.log("🔔 Bel berbunyi!");
+            audio.currentTime = 0;
+            audio.play().catch(err => console.log("Gagal memutar suara:", err));
+        });
+    </script>
+</body>
+</html>
